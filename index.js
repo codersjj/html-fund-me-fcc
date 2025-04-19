@@ -12,8 +12,10 @@ let isConnected = false
 
 const connectBtn = document.getElementById("connectBtn")
 const fundBtn = document.getElementById("fundBtn")
+const balanceBtn = document.getElementById("balanceBtn")
 connectBtn.onclick = connect
 fundBtn.onclick = fund
+balanceBtn.onclick = getBalance
 
 async function connect() {
   if (typeof window.ethereum !== "undefined") {
@@ -62,6 +64,16 @@ window.ethereum.on("accountsChanged", () => {
   console.log("Accounts changed")
   checkConnection()
 })
+
+async function getBalance() {
+  if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.BrowserProvider(window.ethereum)
+    const balance = await provider.getBalance(contractAddress)
+    console.log("🚀 ~ getBalance ~ balance:", balance)
+    const formattedBalance = ethers.formatEther(balance)
+    console.log("🚀 ~ getBalance ~ formattedBalance:", formattedBalance)
+  }
+}
 
 // fund function
 async function fund() {
