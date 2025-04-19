@@ -13,9 +13,11 @@ let isConnected = false
 const connectBtn = document.getElementById("connectBtn")
 const fundBtn = document.getElementById("fundBtn")
 const balanceBtn = document.getElementById("balanceBtn")
+const withdrawBtn = document.getElementById("withdrawBtn")
 connectBtn.onclick = connect
 fundBtn.onclick = fund
 balanceBtn.onclick = getBalance
+withdrawBtn.onclick = withdraw
 
 async function connect() {
   if (typeof window.ethereum !== "undefined") {
@@ -132,3 +134,18 @@ function listenForTransactionMine(transactionResponse, provider) {
 }
 
 // withdraw
+async function withdraw() {
+  if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.BrowserProvider(window.ethereum)
+    const signer = await provider.getSigner()
+    const contract = new ethers.Contract(contractAddress, abi, signer)
+    console.log("Withdrawing...")
+    try {
+      const transactionResponse = await contract.withdraw()
+      await listenForTransactionMine(transactionResponse, provider)
+      console.log("Done!")
+    } catch (error) {
+      console.error(error)
+    }
+  }
+}
