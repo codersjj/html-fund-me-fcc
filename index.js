@@ -5,6 +5,8 @@
 // you can use import
 
 import { ethers } from "./ethers-6.7.0.min.js"
+import { contractAddress, abi } from "./constants.js"
+
 console.log("ethers", ethers)
 let isConnected = false
 
@@ -62,13 +64,28 @@ window.ethereum.on("accountsChanged", () => {
 })
 
 // fund function
-async function fund(ethAmount) {
+async function fund() {
+  const ethAmount = "77"
   console.log(`Funding with ${ethAmount}...`)
   if (typeof window.ethereum !== "undefined") {
     // provider / connection to the blockchain
     // signer / wallet / someone with some gas
     // contract that we are interacting with
     // ABI & Address
+
+    // see: https://docs.ethers.org/v6/migrating/#migrate-providers
+    const provider = new ethers.BrowserProvider(window.ethereum)
+    const signer = await provider.getSigner()
+    console.log("🚀 ~ fund ~ signer:", signer)
+    const contract = new ethers.Contract(contractAddress, abi, signer)
+    console.log("🚀 ~ fund ~ contract:", contract)
+    try {
+      const transactionResponse = await contract.fund({
+        value: ethers.parseEther(ethAmount),
+      })
+    } catch (error) {
+      console.error("Error funding:", error)
+    }
   }
 }
 
